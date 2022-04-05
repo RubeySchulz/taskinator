@@ -1,5 +1,7 @@
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
+var tasksInProgressEl = document.querySelector("#tasks-in-progress");
+var tasksCompletedEl = document.querySelector("#tasks-completed");
 var taskIdCounter = 0;
 var pageContentEl = document.querySelector("#page-content");
 
@@ -106,7 +108,6 @@ var createTaskActions = function(taskId){
 }
 
 var taskButtonHandler = function(event){
-    console.log(event.target);
     var targetEl = event.target;
 
     if (event.target.matches(".delete-btn")){
@@ -126,8 +127,6 @@ var deleteTask = function(taskId){
 }
 
 var editTask = function(taskId){
-    console.log("editing task #" + taskId);
-
     //get task list item element
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
 
@@ -143,8 +142,26 @@ var editTask = function(taskId){
     formEl.setAttribute("data-task-id", taskId);
 }
 
+var taskStatusChangeHandler = function(event){
+    //get items id
+    var taskId = event.target.getAttribute("data-task-id");
+    // get the currently selected options value and convert it to lowercase
+    var statusValue = event.target.value.toLowerCase();
+
+    //find parent task item element based on the id
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']")
+
+    if (statusValue === "to do"){
+        tasksToDoEl.appendChild(taskSelected);
+    }
+    else if (statusValue === "in progress"){
+        tasksInProgressEl.appendChild(taskSelected);
+    }
+    else if (statusValue === "completed"){
+        tasksCompletedEl.appendChild(taskSelected);
+    }
+}
+
 formEl.addEventListener("submit", taskFormHandler);
-
-
-
 pageContentEl.addEventListener("click", taskButtonHandler);
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
